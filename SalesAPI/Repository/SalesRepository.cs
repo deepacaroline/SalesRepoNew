@@ -44,20 +44,31 @@ namespace SalesAPI.Repository
             {
                 var cacheKey = "SalesValues";
                 var jsonData = _distributedCache.GetString(cacheKey);
-                var allsales = JsonConvert.DeserializeObject<List<Sale>>(jsonData);
-                if (allsales != null)
+                if(jsonData != null)
                 {
-                    return allsales;
+                    var allsales = JsonConvert.DeserializeObject<List<Sale>>(jsonData);
+                    if (allsales != null)
+                    {
+                        return allsales;
+                    }
+                    else
+                    {
+                        allsales = _salesDBContext.Sales.ToList();
+                        jsonData = JsonConvert.SerializeObject(allsales);
+                        _distributedCache.SetString(cacheKey, jsonData);
+                        return allsales;
+                    }
                 }
                 else
                 {
-                    allsales = _salesDBContext.Sales.ToList();
-                    jsonData = JsonConvert.SerializeObject(allsales);
+                    var salesAll = _salesDBContext.Sales.ToList();
+                    jsonData = JsonConvert.SerializeObject(salesAll);
                     _distributedCache.SetString(cacheKey, jsonData);
-                    return allsales;
+                    return salesAll;
                 }
+               
             }
-            catch 
+            catch (Exception ex)
             {
                 return _salesDBContext.Sales.ToList();
             }

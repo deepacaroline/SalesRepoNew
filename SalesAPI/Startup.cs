@@ -46,9 +46,9 @@ namespace SalesAPI
             });
             services.AddDistributedRedisCache(option =>
             {
-                option.Configuration = "SalesRCache.redis.cache.windows.net:6380,password = 3AzSttWdLg7Bxal8d35UiIKEot3lGkAC4yiwJMyfYOE =,ssl = True,abortConnect = False";
+                option.Configuration = "SalesRCache.redis.cache.windows.net:6380,password=srYvoPN1eFkrowjX+yHD2h443sPRFaP3oT5Toqgz7dU=,ssl=True,abortConnect=False";
                 //option.Configuration = "localhost:6379";
-                option.InstanceName = "SalesInstance";
+                option.InstanceName = "SalesRCache";
             });
             services.AddAuthentication(option =>
             {
