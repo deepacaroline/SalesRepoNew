@@ -5,15 +5,19 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SalesAPI.Data;
 using SalesAPI.Model;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 
 namespace SalesAPI.Repository
 {
     public class SalesRepository : ISalesRepository
     {
         private SalesDBContext _salesDBContext;
-        public SalesRepository(SalesDBContext saleDBContext)
+        private IDistributedCache _distributedCache;
+        public SalesRepository(SalesDBContext saleDBContext, IDistributedCache distributedCache)
         {
             _salesDBContext = saleDBContext;
+            _distributedCache = distributedCache;
         }
 
         public void AddSale(Sale saleItem)
@@ -36,7 +40,27 @@ namespace SalesAPI.Repository
 
         public IEnumerable<Sale> GetSales()
         {
-            return _salesDBContext.Sales.ToList();
+            try 
+            {
+                var cacheKey = "SalesValues";
+                var jsonData = _distributedCache.GetString(cacheKey);
+                var allsales = JsonConvert.DeserializeObject<List<Sale>>(jsonData);
+                if (allsales != null)
+                {
+                    return allsales;
+                }
+                else
+                {
+                    allsales = _salesDBContext.Sales.ToList();
+                    jsonData = JsonConvert.SerializeObject(allsales);
+                    _distributedCache.SetString(cacheKey, jsonData);
+                    return allsales;
+                }
+            }
+            catch 
+            {
+                return _salesDBContext.Sales.ToList();
+            }
         }
 
         public void RemoveSale(int ID)
