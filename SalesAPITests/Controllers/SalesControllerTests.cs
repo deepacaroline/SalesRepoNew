@@ -32,11 +32,7 @@ namespace SalesAPI.Controllers.Tests
         {  
             var response = controller.Get();
             Assert.IsNotNull(response);
-            //var testSaleData = GetTestSale();
-            ////salesDBContext.Sales.AddRange(testSaleData);
-            //var controler = new SalesController(salesDBContext);
-            //var result = controler.Get() as List<Sale>;
-            //Assert.AreEqual(result.Count, testSaleData.Count);
+          
         }
 
         public void GetTestByID_Success()
@@ -44,8 +40,7 @@ namespace SalesAPI.Controllers.Tests
             var mockRepo = new Mock<ISalesRepository>();
             mockRepo.Setup(x => x.GetByID(2)).Returns(new Sale { invoiceID = 2, productID = 02, productName = "bbb", productQuantity = 8, totalPrice = 80 });
 
-            var response = controller.Get(2);
-            // contentResult = response as OkNegotiatedContentResult<Sale>;
+            var response = controller.Get(2);            
             Assert.IsNotNull(response);
         }
 
