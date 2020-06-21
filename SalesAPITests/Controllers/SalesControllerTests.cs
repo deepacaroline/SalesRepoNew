@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore.InMemory;
 using Microsoft.Extensions.Caching.Distributed;
 using Moq;
 using System.Web.Http.Results;
+using System.Linq;
 
 namespace SalesAPI.Controllers.Tests
 {
@@ -27,19 +28,16 @@ namespace SalesAPI.Controllers.Tests
             mockRepo = new Mock<ISalesRepository>();            
         }
 
-        //[TestMethod()]
-        //public void GetTest_Success()
-        //{
-        //    controller = new SalesController(mockRepo.Object)
-        //    { 
-        //    };
-        //    mockRepo.Setup(x => x.GetByID(2)).Returns(new Sale { invoiceID = 2, productID = 02, productName = "bbb", productQuantity = 8, totalPrice = 80 });
-           
+        [TestMethod()]
+        public void GetTest_Success()
+        {
+            mockRepo.Setup(x => x.GetSales()).Returns(GetTestSale());
+            controller = new SalesController(mockRepo.Object);
 
-        //    var response = controller.Get();
-        //    Assert.IsNotNull(response);
-          
-        //}
+            var response = controller.Get();
+            Assert.IsNotNull(response);
+
+        }
         [TestMethod()]
         public void GetTestByID_Success()
         {
@@ -50,12 +48,12 @@ namespace SalesAPI.Controllers.Tests
             Assert.AreEqual(response.productName, "bbb");
         }
 
-        //private List<Sale> GetTestSale()
-        //{
-        //    var testSales = new List<Sale>();
-        //    testSales.Add(new Sale { invoiceID = 1, productID = 01, productName = "aaa", productQuantity = 5, totalPrice = 50 });
-        //    testSales.Add(new Sale { invoiceID = 2, productID = 02, productName = "bbb", productQuantity = 8, totalPrice = 80 });
-        //    return testSales;
-        //}
+        private IList<Sale> GetTestSale()
+        {
+            var testSales = new List<Sale>();
+            testSales.Add(new Sale { invoiceID = 1, productID = 01, productName = "aaa", productQuantity = 5, totalPrice = 50 });
+            testSales.Add(new Sale { invoiceID = 2, productID = 02, productName = "bbb", productQuantity = 8, totalPrice = 80 });
+            return testSales;
+        }
     }
 }
