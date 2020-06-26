@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "redis1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroup')]/providers/Microsoft.Cache/Redis/SalesRCache",
+      "type": "redis.azure",
+      "connectionId": "CacheConnection",
+      "secretStore": "AzureAppSettings"
+    },
+    "mssql1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroup')]/providers/Microsoft.Sql/servers/salesapidbserver/databases/SalesAPI_db",
+      "type": "mssql.azure",
+      "connectionId": "salesdb",
+      "secretStore": "AzureAppSettings"
+    }
+  }
+}

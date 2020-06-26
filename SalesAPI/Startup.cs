@@ -46,12 +46,7 @@ namespace SalesAPI
                     Version="v1"
                   });
             });
-            services.AddDistributedRedisCache(option =>
-            {
-                option.Configuration = "SalesRCache.redis.cache.windows.net:6380,password=srYvoPN1eFkrowjX+yHD2h443sPRFaP3oT5Toqgz7dU=,ssl=True,abortConnect=False";
-                //option.Configuration = "localhost:6379";
-                option.InstanceName = "SalesRCache";
-            });
+
             services.AddAuthentication(option =>
             {
                 option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -64,8 +59,29 @@ namespace SalesAPI
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration["Jwt:Issuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
                 };
+            });
+            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //.AddJwtBearer(options =>
+            //{
+            //    options.TokenValidationParameters = new TokenValidationParameters
+            //    {
+            //        ValidateIssuer = true,
+            //        ValidateAudience = true,
+            //        ValidateLifetime = true,
+            //        ValidateIssuerSigningKey = true,
+            //        ValidIssuer = Configuration["Jwt:Issuer"],
+            //        ValidAudience = Configuration["Jwt:Issuer"],
+            //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+            //    };
+            //});
+            services.AddMvc();
+
+            services.AddDistributedRedisCache(option =>
+            {
+                option.Configuration = Configuration["ConnectionStrings:CacheConnection"];
             });
         }
                 
@@ -97,6 +113,10 @@ namespace SalesAPI
                 options.RoutePrefix = "";
             });
             app.UseAuthentication();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}");
+            });
         }
     }
 }

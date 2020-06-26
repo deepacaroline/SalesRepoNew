@@ -47,6 +47,42 @@ namespace SalesAPI.Controllers.Tests
             var response = controller.Get(2);
             Assert.AreEqual(response.productName, "bbb");
         }
+        [TestMethod()]
+        public void GetTestByID_Failure()
+        {
+            mockRepo.Setup(x => x.GetByID(2)).Returns(new Sale { invoiceID = 2, productID = 02, productName = "bbb", productQuantity = 8, totalPrice = 80 });
+            controller = new SalesController(mockRepo.Object);
+
+            var response = controller.Get(2);
+            Assert.AreNotEqual(response.productName, "ccc");
+        }
+        [TestMethod()]
+        public void DeleteTest()
+        {
+            //mockRepo.Setup(x => x.GetByID(2)).Returns(new Sale { invoiceID = 2, productID = 02, productName = "bbb", productQuantity = 8, totalPrice = 80 });            
+            controller = new SalesController(mockRepo.Object);
+            controller.Delete(2);
+            mockRepo.Verify(v => v.RemoveSale(2), Times.Once());
+        }
+
+        [TestMethod()]
+        public void PostTest()
+        {
+            Sale newSale = new Sale { invoiceID = 2, productID = 02, productName = "bbb", productQuantity = 8, totalPrice = 80 };
+            //mockRepo.Setup(x => x.AddSale(newSale));
+            controller = new SalesController(mockRepo.Object);
+            controller.Post(newSale);
+            mockRepo.Verify(v => v.AddSale(newSale), Times.Once());
+        }
+
+        [TestMethod()]
+        public void EditTest()
+        {
+            Sale newSale = new Sale { invoiceID = 2, productID = 02, productName = "bbb", productQuantity = 8, totalPrice = 80 };
+            controller = new SalesController(mockRepo.Object);
+            controller.Put(newSale);
+            mockRepo.Verify(v => v.EditSale(newSale), Times.Once());
+        }
 
         private IList<Sale> GetTestSale()
         {

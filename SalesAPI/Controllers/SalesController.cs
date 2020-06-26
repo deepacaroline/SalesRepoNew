@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 //using System.Net.Http.formatting
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
@@ -19,6 +20,7 @@ namespace SalesAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class SalesController : Controller
     {
         private ISalesRepository _repository;        
@@ -29,22 +31,25 @@ namespace SalesAPI.Controllers
         }
 
         // GET: api/<SalesController>
+        [AllowAnonymous]
         [HttpGet]
         public IEnumerable<Sale> Get()
         {
             var result = _repository.GetSales();            
             return result;            
         }
-        
+
         // GET api/<SalesController>/5
+        [Authorize]
         [HttpGet("{id}")]        
         public Sale Get(int id)
         {            
             var result = _repository.GetByID(id);            
             return result;
-        }        
+        }
 
         // POST api/<SalesController>
+        [AllowAnonymous]
         [HttpPost]
         public void Post([FromBody] Sale sale)
         {            
@@ -52,6 +57,7 @@ namespace SalesAPI.Controllers
         }
 
         // PUT api/<SalesController>/5
+
         [HttpPut]
         public void Put([FromBody] Sale sale)
         { 
@@ -59,6 +65,7 @@ namespace SalesAPI.Controllers
         }
 
         // DELETE api/<SalesController>/5
+        
         [HttpDelete]
         public void Delete(int id)
         {
