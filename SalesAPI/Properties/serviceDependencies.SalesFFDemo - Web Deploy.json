@@ -7,7 +7,7 @@
       "secretStore": "AzureAppSettings"
     },
     "mssql1": {
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroup')]/providers/Microsoft.Sql/servers/salesapidbserver/databases/SalesAPI_db",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroup')]/providers/Microsoft.Sql/servers/salesapidbserver/databases/SalesDBNew",
       "type": "mssql.azure",
       "connectionId": "salesdb",
       "secretStore": "AzureAppSettings"

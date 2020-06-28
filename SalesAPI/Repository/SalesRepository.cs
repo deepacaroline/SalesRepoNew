@@ -7,6 +7,7 @@ using SalesAPI.Data;
 using SalesAPI.Model;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
+using NLog;
 
 namespace SalesAPI.Repository
 {
@@ -14,32 +15,37 @@ namespace SalesAPI.Repository
     {
         private SalesDBContext _salesDBContext;
         private IDistributedCache _distributedCache;
-        public SalesRepository(SalesDBContext saleDBContext, IDistributedCache distributedCache)
+        private ILog _appLogger;
+        public SalesRepository(SalesDBContext saleDBContext, IDistributedCache distributedCache, ILog appLogger)
         {
             _salesDBContext = saleDBContext;
             _distributedCache = distributedCache;
+            _appLogger = appLogger;
         }
 
         public void AddSale(Sale saleItem)
         {
+            _appLogger.Information("Calling method AddSale");
             _salesDBContext.Sales.Add(saleItem);
             _salesDBContext.SaveChanges();
         }
 
         public void EditSale(Sale saleItem)
         {
+            _appLogger.Information("Calling method EditSale");
             _salesDBContext.Entry(saleItem).State = EntityState.Modified;
             _salesDBContext.SaveChanges();
         }
 
         public Sale GetByID(int ID)
         {
-            //var saleItem = _salesDBContext.Sales.AsNoTracking().Where(item => item.invoiceID == ID).FirstOrDefault();
+            _appLogger.Information("Calling method GetByID");
             return _salesDBContext.Sales.Find(ID);
         }
 
         public IEnumerable<Sale> GetSales()
         {
+            _appLogger.Information("Calling method GetSales");
             try 
             {
                 var cacheKey = "SalesValues";
@@ -70,6 +76,7 @@ namespace SalesAPI.Repository
             }
             catch (Exception ex)
             {
+                _appLogger.Error(ex.Message);
                 return _salesDBContext.Sales.ToList();
             }
         }

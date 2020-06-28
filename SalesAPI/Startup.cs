@@ -32,10 +32,11 @@ namespace SalesAPI
         public void ConfigureServices(IServiceCollection services)
         {            
             services.AddScoped<ISalesRepository, SalesRepository>();
-            
+            services.AddSingleton<ILog, LogNLog>();
             services.AddControllers();
             services.AddDbContext<SalesDBContext>(option=>option.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB; Initial Catalog = SalesDB;"));
-            //Data Source = (localdb)\MSSQLLocalDB; Initial Catalog = master; Integrated Security = True; Connect Timeout = 30; Encrypt = False; TrustServerCertificate = False; ApplicationIntent = ReadWrite; MultiSubnetFailover = False
+            //services.AddDbContext<SalesDBContext>(option => option.UseSqlServer(@"Data Source =Server=tcp:salesapidbserver.database.windows.net,1433;Initial Catalog=SalesAPI_db;Persist Security Info=False;User ID=deepacaroline;Password=pass4db;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"));
+            
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1",
@@ -59,7 +60,7 @@ namespace SalesAPI
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = Configuration["Jwt:Issuer"],
+
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
                 };
             });
@@ -78,6 +79,7 @@ namespace SalesAPI
             //    };
             //});
             services.AddMvc();
+            
 
             services.AddDistributedRedisCache(option =>
             {
@@ -117,6 +119,7 @@ namespace SalesAPI
             {
                 endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}");
             });
+            app.UseDeveloperExceptionPage();
         }
     }
 }
